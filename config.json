@@ -1,0 +1,43 @@
+{
+  "appName": "Exercise Tracker",
+  "version": "1.0.0",
+  "description": "A web-based fitness exercise tracking application",
+  "author": "Web Server Programming Class",
+  "createdDate": "2026-01-31",
+  "settings": {
+    "theme": "dark-purple",
+    "defaultUnit": "minutes",
+    "calorieCalculation": "manual",
+    "enableNotifications": false,
+    "darkMode": false,
+    "language": "en"
+  },
+  "features": {
+    "exerciseLogging": true,
+    "statisticsTracking": true,
+    "localStoragePersistence": true,
+    "exerciseDeletion": true,
+    "responsiveDesign": true
+  },
+  "futureFeatures": {
+    "exerciseCategories": false,
+    "dailyGoals": false,
+    "dataExport": false,
+    "charts": false,
+    "userAuthentication": false,
+    "cloudSync": false
+  },
+  "api": {
+    "baseUrl": "http://localhost:3000",
+    "endpoints": {
+      "exercises": "/api/exercises",
+      "stats": "/api/stats",
+      "users": "/api/users"
+    }
+  },
+  "storage": {
+    "type": "localStorage",
+    "key": "exercises",
+    "backup": true
+  }
+}

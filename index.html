@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💪 Exercise Tracker</h1>
+            <p>Track your daily workouts and stay motivated</p>
+        </header>
+
+        <main>
+            <!-- Input Form Section -->
+            <section class="form-section">
+                <h2>Log Your Exercise</h2>
+                <form id="exerciseForm">
+                    <div class="form-group">
+                        <label for="exerciseName">Exercise Name:</label>
+                        <input type="text" id="exerciseName" placeholder="e.g., Running, Weight Lifting" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="duration">Duration (minutes):</label>
+                            <input type="number" id="duration" min="1" placeholder="30" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="caloriesBurned">Calories Burned:</label>
+                            <input type="number" id="caloriesBurned" min="0" placeholder="250">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exerciseDate">Date:</label>
+                        <input type="date" id="exerciseDate" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Add Exercise</button>
+                </form>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <h3>Total Exercises</h3>
+                    <p class="stat-value" id="totalExercises">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Minutes</h3>
+                    <p class="stat-value" id="totalMinutes">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Calories Burned</h3>
+                    <p class="stat-value" id="totalCalories">0</p>
+                </div>
+            </section>
+
+            <!-- Exercise List Section -->
+            <section class="list-section">
+                <h2>Your Exercises</h2>
+                <div id="exerciseList" class="exercise-list">
+                    <p class="empty-message">No exercises logged yet. Start by adding your first workout!</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Exercise Tracker | Stay healthy, stay active</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
