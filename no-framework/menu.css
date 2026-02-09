@@ -1,0 +1,111 @@
+nav {
+    background-color: #387811;
+    color: #0c0c0c;
+    width: 100%;
+    
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0 16px;
+    gap: 0;
+}
+
+nav li {
+    position: relative;
+}
+
+nav summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 8px 16px;
+    display: block;
+    font-weight: bold;
+}
+
+#edit-menu {
+    font-weight: normal;
+}
+
+nav summary::-webkit-details-marker {
+    display: none;
+}
+
+nav summary::marker {
+    display: none;
+}
+
+nav details > ul {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background-color: #2a5f0c;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: 150px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+nav details > ul li {
+    position: relative;
+}
+
+nav details > ul a {
+    display: block;
+    padding: 8px 16px;
+    color: #0c0c0c;
+    text-decoration: none;
+}
+
+nav details > ul a:hover {
+    background-color: #1d4608;
+}
+
+/* Hide all dropdowns by default, show File and View on hover only */
+nav li:not(:has(#edit-menu)) details > ul {
+    display: none !important;
+}
+
+nav li:not(:has(#edit-menu)):hover details > ul {
+    display: flex !important;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+    background-color: #bcf3c7;
+    margin: 0;
+    padding: 0;
+}
+.page {
+  
+    padding: 20px;
+}
+h1 {
+    font-weight: bold;
+    font-size: 22px;
+}
+h2 {
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 1.4;
+}
+#box1 {
+    background-color: rgb(241, 251, 247);
+    padding: 20px;
+    border-left: 6px solid #387811;
+    margin-top: 20px;
+}
+
+#box2 {
+    background-color: rgb(241, 251, 247);
+    padding: 20px;
+    border-left: 6px solid #d9de6f;
+    margin-top: 20px;
+  
+}
