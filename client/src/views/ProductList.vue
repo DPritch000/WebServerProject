@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useProductsStore } from '@/stores/products';
+import { useProductStore } from '@/stores/products';
 
 
-const products = useProductsStore()
+const products = useProductStore()
 
 </script>
 
