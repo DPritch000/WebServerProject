@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "name": "Morning Run",
+    "type": "Running",
+    "duration": 30,
+    "photo": "https://images.unsplash.com/photo-1571019613915-7d1e5b42f845?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 2,
+    "name": "Evening Yoga",
+    "type": "Yoga",
+    "duration": 45,
+    "photo": "https://images.unsplash.com/photo-1552058544-f2b08422138a?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 3,
+    "name": "Strength Training",
+    "type": "Weightlifting",
+    "duration": 60,
+    "photo": "https://images.unsplash.com/photo-1599058917215-f3cb929c3c7e?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 4,
+    "name": "Cycling",
+    "type": "Cycling",
+    "duration": 90,
+    "photo": "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 5,
+    "name": "Swimming",
+    "type": "Swimming",
+    "duration": 60,
+    "photo": "https://images.unsplash.com/photo-1562771243-6e5d2f1fa7e5?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 6,
+    "name": "HIIT Workout",
+    "type": "High-Intensity Interval Training",
+    "duration": 20,
+    "photo": "https://images.unsplash.com/photo-1605296867207-5609d9d0bfb6?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 7,
+    "name": "Pilates",
+    "type": "Pilates",
+    "duration": 50,
+    "photo": "https://images.unsplash.com/photo-1598032893452-7c7ad21b9f68?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 8,
+    "name": "Boxing",
+    "type": "Boxing",
+    "duration": 40,
+    "photo": "https://images.unsplash.com/photo-1599058917215-4f47e4b8f2a1?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 9,
+    "name": "Dance Fitness",
+    "type": "Dance",
+    "duration": 60,
+    "photo": "https://images.unsplash.com/photo-1605296867261-7b86f5d8dfb7?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 10,
+    "name": "CrossFit",
+    "type": "CrossFit",
+    "duration": 45,
+    "photo": "https://images.unsplash.com/photo-1605296867170-0b8f71c2e1fa?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 11,
+    "name": "Hiking",
+    "type": "Hiking",
+    "duration": 120,
+    "photo": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 12,
+    "name": "Rowing",
+    "type": "Rowing",
+    "duration": 30,
+    "photo": "https://images.unsplash.com/photo-1517649763962-0c623066013b?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 13,
+    "name": "Martial Arts",
+    "type": "Martial Arts",
+    "duration": 60,
+    "photo": "https://images.unsplash.com/photo-1571019613606-0c7f4d5b4f3c?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 14,
+    "name": "Zumba",
+    "type": "Zumba",
+    "duration": 50,
+    "photo": "https://images.unsplash.com/photo-1605296867236-0f0ee9d4b1b2?fit=crop&w=400&q=80"
+  },
+  {
+    "id": 15,
+    "name": "Stretching",
+    "type": "Stretching",
+    "duration": 15,
+    "photo": "https://images.unsplash.com/photo-1605296867255-8b7c9c3c7f1d?fit=crop&w=400&q=80"
+  }
+]

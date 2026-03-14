@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import UserLoginDropdown from '@/components/UserLoginDropdown.vue'
 
 const isActive = ref(false);
 </script>
@@ -27,29 +28,46 @@ const isActive = ref(false);
             <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isActive }">
                 <div class="navbar-start">
                     <RouterLink to="/" active-class="is-active" class="navbar-item">
-                        Home
+                      <span class="icon-text"></span>
+                        <span class="icon"></span>
+                        <i class="fa-solid fa-person-running"></i>
+                       My Activity
                     </RouterLink>
 
-                    <RouterLink to="/products" active-class="is-active" class="navbar-item">
-                        Products
+                    <RouterLink to="/statistics" active-class="is-active" class="navbar-item">
+                      <span class="icon-text"></span>
+                        <span class="icon"></span>
+                        <i class="fa-solid fa-chart-simple"></i>
+                        Statistics
+                    </RouterLink>
+
+                    <RouterLink to="/friendsactivity" active-class="is-active" class="navbar-item">
+                      <span class="icon-text"></span>
+                        <span class="icon"></span>
+                        <i class="fa-solid fa-users-rays"></i>
+                        Friends' Activity
+                    </RouterLink>
+
+                    <RouterLink to="/peoplesearch" active-class="is-active" class="navbar-item">
+                      <span class="icon-text"></span>
+                        <span class="icon"></span>
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        People Search
                     </RouterLink>
 
                     <div class="navbar-item has-dropdown is-hoverable">
                         <a class="navbar-link">
-                            More
+                            Admin
                         </a>
 
                         <div class="navbar-dropdown">
                             <RouterLink to="/about" active-class="is-active" class="navbar-item">
-                                About
+                                Users
+                                <span class="icon-text"></span>
+                                <span class="icon"></span>
+                                <i class="fa-solid fa-circle-user"></i>
                             </RouterLink>
-                            <RouterLink to="/contact" active-class="is-active" class="navbar-item">
-                                Contact
-                            </RouterLink>
-                            <hr class="navbar-divider">
-                            <RouterLink to="/report-issue" active-class="is-active" class="navbar-item">
-                                Report an issue
-                            </RouterLink>
+
                         </div>
                     </div>
                 </div>
@@ -60,9 +78,23 @@ const isActive = ref(false);
                             <RouterLink to="/sign-up" active-class="is-active" class="button is-primary">
                                 <strong>Sign up</strong>
                             </RouterLink>
-                            <RouterLink to="/log-in" active-class="is-active" class="button is-light">
-                                Log in
-                            </RouterLink>
+                            <UserLoginDropdown />
+                            <p class="control">
+                              <a
+                              class="bd-tw-button button"
+                              data-social-network="Twitter"
+                              data-social-action="tweet"
+                              data-social-target="https://bulma.io"
+                              target="_blank"
+                              href="http://twitter.com/intent/tweet?text=Bulma: a modern CSS framework on FLexbos&amp;hastags=nulmaio&amp;url=https://bulma.io&amp;via=jgthms"
+                              >
+                              <span class="icon">
+                                <i class="fab fa-twitter"></i>
+                              </span>
+                              <span>Tweet</span>
+                            </a>
+                            </p>
+
                         </div>
                     </div>
                 </div>
