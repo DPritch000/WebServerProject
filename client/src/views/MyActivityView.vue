@@ -16,6 +16,7 @@ const description = ref('')
 const durationMinutes = ref<number | null>(null)
 const distanceKm = ref<number | null>(null)
 const date = ref(new Date().toISOString().slice(0,16)) // YYYY-MM-DDTHH:mm
+const editingId = ref<number | null>(null)
 
 const userPosts = computed(() => {
   if (!auth.currentUser) return []
@@ -29,6 +30,26 @@ function toggleForm() { showForm.value = !showForm.value }
 
 function submit() {
   if (!auth.currentUser) return alert('Please log in first')
+  // edit existing post
+  if (editingId.value) {
+    posts.updatePost(editingId.value, {
+      description: description.value.trim() || undefined,
+      durationMinutes: Number(durationMinutes.value || 0),
+      distanceKm: distanceKm.value ? Number(distanceKm.value) : undefined,
+      date: new Date(date.value).toISOString(),
+    })
+    // clear edit state
+    editingId.value = null
+    showForm.value = false
+    // clear fields
+    title.value = ''
+    description.value = ''
+    durationMinutes.value = null
+    distanceKm.value = null
+    date.value = new Date().toISOString().slice(0,16)
+    return
+  }
+
   if (!selectedWorkoutId.value || !durationMinutes.value) return alert('Please choose a workout and provide duration')
 
   posts.addPost({
@@ -49,16 +70,41 @@ function submit() {
   date.value = new Date().toISOString().slice(0,16)
   showForm.value = false
 }
+
+function startEdit(p: any) {
+  editingId.value = p.id
+  // prefill editable fields
+  description.value = p.description ?? ''
+  durationMinutes.value = p.durationMinutes ?? null
+  distanceKm.value = p.distanceKm ?? null
+  date.value = new Date(p.date).toISOString().slice(0,16)
+  showForm.value = true
+}
+
+function deletePost(id: number) {
+  if (!confirm('Delete this post?')) return
+  posts.removePost(id)
+  if (editingId.value === id) {
+    editingId.value = null
+    // clear form
+    title.value = ''
+    description.value = ''
+    durationMinutes.value = null
+    distanceKm.value = null
+    date.value = new Date().toISOString().slice(0,16)
+    showForm.value = false
+  }
+}
 </script>
 
 <template>
-  <main>
+  <main style="padding-top:4rem">
     <h1>My Activity</h1>
     <div v-if="accessError" class="notification is-danger" style="max-width:720px; margin:12px auto; text-align:center;">
       You are not an admin and cannot access the requested page.
     </div>
 
-    <div style="margin:16px 0; display:flex; justify-content:center; width:100%">
+    <div style="margin:48px 0 16px; display:flex; justify-content:center; width:100%">
       <button class="button is-danger is-large" @click="toggleForm" style="font-weight:700">
         Add Workout
       </button>
@@ -123,7 +169,13 @@ function submit() {
       <div v-if="!auth.currentUser">Please log in to see and add workouts.</div>
       <div v-else style="width:100%; display:flex; flex-direction:column; align-items:center;">
         <div v-if="userPosts.length === 0">No workouts yet.</div>
-        <WorkoutPost v-for="p in userPosts" :key="p.id" :post="p" />
+        <div v-for="p in userPosts" :key="p.id" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+          <WorkoutPost :post="p" />
+          <div style="margin:8px 0; display:flex; gap:8px;">
+            <button class="button is-small is-info" @click="startEdit(p)">Edit</button>
+            <button class="button is-small is-danger" @click="deletePost(p.id)">Delete</button>
+          </div>
+        </div>
       </div>
     </section>
   </main>

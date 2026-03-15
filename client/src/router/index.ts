@@ -3,7 +3,7 @@ import MyActivityView from '@/views/MyActivityView.vue'
 import StatisticsView from '@/views/StatisticsView.vue'
 import FriendsActivityView from '@/views/FriendsActivityView.vue'
 import PeopleSearchView from '@/views/PeopleSearchView.vue'
-import path from 'path'
+import HpmePageView from '@/views/HomePage.vue'
 import AdminView from '@/views/AdminView.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -11,8 +11,14 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
 
+
     {
       path: '/',
+      name: 'home',
+      component: HpmePageView,
+    },
+    {
+      path: '/myactivity',
       name: 'myactivity',
       component: MyActivityView,
     },

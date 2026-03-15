@@ -10,9 +10,13 @@ const isActive = ref(false);
     <nav class="navbar is-info" role="navigation" aria-label="main navigation">
         <div class="container">
             <div class="navbar-brand">
-                <a class="navbar-item" href="https://bulma.io">
-                    <img alt="Vue logo" width="30" height="30" src="@/assets/logo.svg" />
-
+                <a class="navbar-item">
+                   <RouterLink to="/" active-class="is-active" >
+                    <span class="icon-text"></span>
+                        <span class="icon"></span>
+                        <i class="fa-solid fa-house-user"></i>
+                    Home
+                  </RouterLink>
                 </a>
 
                 <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
@@ -27,7 +31,7 @@ const isActive = ref(false);
 
             <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isActive }">
                 <div class="navbar-start">
-                    <RouterLink to="/" active-class="is-active" class="navbar-item">
+                    <RouterLink to="/myactivity" active-class="is-active" class="navbar-item">
                       <span class="icon-text"></span>
                         <span class="icon"></span>
                         <i class="fa-solid fa-person-running"></i>

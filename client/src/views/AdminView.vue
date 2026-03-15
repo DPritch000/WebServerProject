@@ -5,8 +5,8 @@
         <h1 class="title">Admin - Users</h1>
       </div>
       <div class="level-right">
-        <button class="button is-info">
-          <span class="icon is-small"><i class="fa-solid fa-users-plus"></i></span>
+        <button class="button is-danger">
+          <span class="icon is-small"><i class="fa-solid fa-plus"></i></span>
           <span>Add User</span>
         </button>
       </div>
@@ -21,6 +21,7 @@
             <th>Name</th>
             <th>Role</th>
             <th>Friends</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +35,16 @@
             <td>{{ user.name }}</td>
             <td>{{ user.role }}</td>
             <td>{{ friendNames(user) }}</td>
+            <td>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <button class="button is-small is-light" title="Edit user">
+                  <span class="icon is-small"><i class="fa-solid fa-pen"></i></span>
+                </button>
+                <button class="button is-small is-danger" title="Delete user">
+                  <span class="icon is-small"><i class="fa-solid fa-trash"></i></span>
+                </button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
