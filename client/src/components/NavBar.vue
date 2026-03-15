@@ -61,7 +61,7 @@ const isActive = ref(false);
                         </a>
 
                         <div class="navbar-dropdown">
-                            <RouterLink to="/about" active-class="is-active" class="navbar-item">
+                            <RouterLink to="/adminview" active-class="is-active" class="navbar-item">
                                 Users
                                 <span class="icon-text"></span>
                                 <span class="icon"></span>
@@ -72,32 +72,32 @@ const isActive = ref(false);
                     </div>
                 </div>
 
-                <div class="navbar-end">
-                    <div class="navbar-item">
-                        <div class="buttons">
-                            <RouterLink to="/sign-up" active-class="is-active" class="button is-primary">
-                                <strong>Sign up</strong>
-                            </RouterLink>
-                            <UserLoginDropdown />
-                            <p class="control">
-                              <a
-                              class="bd-tw-button button"
-                              data-social-network="Twitter"
-                              data-social-action="tweet"
-                              data-social-target="https://bulma.io"
-                              target="_blank"
-                              href="http://twitter.com/intent/tweet?text=Bulma: a modern CSS framework on FLexbos&amp;hastags=nulmaio&amp;url=https://bulma.io&amp;via=jgthms"
-                              >
-                              <span class="icon">
-                                <i class="fab fa-twitter"></i>
-                              </span>
-                              <span>Tweet</span>
-                            </a>
-                            </p>
+                  <div class="navbar-end">
 
-                        </div>
-                    </div>
-                </div>
+                      <div class="navbar-item">
+                        <RouterLink to="/sign-up" class="button is-primary">
+                        <strong>Sign up</strong>
+                        </RouterLink>
+                      </div>
+
+                      <div class="navbar-item">
+                      <UserLoginDropdown />
+                      </div>
+
+                      <div class="navbar-item">
+                        <a
+                          class="button"
+                          target="_blank"
+                          href="https://twitter.com/intent/tweet?text=WorkoutApp"
+                        >
+                        <span class="icon">
+                        <i class="fab fa-twitter"></i>
+                        </span>
+                        <span>Tweet</span>
+                        </a>
+                      </div>
+
+                  </div>
             </div>
         </div>
     </nav>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { usePostsStore } from '@/stores/posts'
 import workoutsData from '@/data/workouts.json'
@@ -20,6 +21,9 @@ const userPosts = computed(() => {
   if (!auth.currentUser) return []
   return posts.postsByUser(auth.currentUser.id)
 })
+
+const route = useRoute()
+const accessError = computed(() => route.query?.error === 'not-admin')
 
 function toggleForm() { showForm.value = !showForm.value }
 
@@ -50,6 +54,9 @@ function submit() {
 <template>
   <main>
     <h1>My Activity</h1>
+    <div v-if="accessError" class="notification is-danger" style="max-width:720px; margin:12px auto; text-align:center;">
+      You are not an admin and cannot access the requested page.
+    </div>
 
     <div style="margin:16px 0; display:flex; justify-content:center; width:100%">
       <button class="button is-danger is-large" @click="toggleForm" style="font-weight:700">
@@ -122,4 +129,4 @@ function submit() {
   </main>
 </template>
 
- 
+
