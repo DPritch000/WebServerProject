@@ -6,95 +6,148 @@ import { usePostsStore } from '@/stores/posts'
 import workoutsData from '@/data/workouts.json'
 import WorkoutPost from '@/components/WorkoutPost.vue'
 
+import type { Workout } from '@/types'
+
+
 const auth = useAuthStore()
 const posts = usePostsStore()
 
+
+// type workouts.json inline (no new type file)
+const workouts = workoutsData as {
+  id: number
+  name: string
+  type: string
+  photo: string
+}[]
+
+
 const showForm = ref(false)
-const selectedWorkoutId = ref<number | null>((workoutsData as any[])[0]?.id ?? null)
-const title = ref('')
+
+const selectedWorkoutId = ref<number | null>(
+  workouts[0]?.id ?? null
+)
+
 const description = ref('')
 const durationMinutes = ref<number | null>(null)
 const distanceKm = ref<number | null>(null)
-const date = ref(new Date().toISOString().slice(0,16)) // YYYY-MM-DDTHH:mm
+
+const date = ref(
+  new Date().toISOString().slice(0,16)
+)
+
 const editingId = ref<number | null>(null)
 
-const userPosts = computed(() => {
+
+const userPosts = computed<Workout[]>(() => {
   if (!auth.currentUser) return []
   return posts.postsByUser(auth.currentUser.id)
 })
 
-const route = useRoute()
-const accessError = computed(() => route.query?.error === 'not-admin')
 
-function toggleForm() { showForm.value = !showForm.value }
+const route = useRoute()
+
+const accessError = computed(
+  () => route.query?.error === 'not-admin'
+)
+
+
+function toggleForm() {
+  showForm.value = !showForm.value
+}
+
 
 function submit() {
-  if (!auth.currentUser) return alert('Please log in first')
-  // edit existing post
+
+  if (!auth.currentUser) {
+    alert('Please log in first')
+    return
+  }
+
+  // EDIT
   if (editingId.value) {
+
     posts.updatePost(editingId.value, {
-      description: description.value.trim() || undefined,
+      description: description.value || undefined,
       durationMinutes: Number(durationMinutes.value || 0),
-      distanceKm: distanceKm.value ? Number(distanceKm.value) : undefined,
+      distanceKm: distanceKm.value ?? undefined,
       date: new Date(date.value).toISOString(),
     })
-    // clear edit state
+
     editingId.value = null
     showForm.value = false
-    // clear fields
-    title.value = ''
+
     description.value = ''
     durationMinutes.value = null
     distanceKm.value = null
     date.value = new Date().toISOString().slice(0,16)
+
     return
   }
 
-  if (!selectedWorkoutId.value || !durationMinutes.value) return alert('Please choose a workout and provide duration')
+
+  // ADD
+  if (!selectedWorkoutId.value || !durationMinutes.value) {
+    alert('Choose workout + duration')
+    return
+  }
 
   posts.addPost({
     userId: auth.currentUser.id,
     workoutId: selectedWorkoutId.value,
-    // title and picture will be filled from workouts.json in the store
-    description: description.value.trim() || undefined,
+    description: description.value || undefined,
     durationMinutes: Number(durationMinutes.value),
-    distanceKm: distanceKm.value ? Number(distanceKm.value) : undefined,
+    distanceKm: distanceKm.value ?? undefined,
     date: new Date(date.value).toISOString(),
+    title: ''
   })
 
-  // clear
-  title.value = ''
+
   description.value = ''
   durationMinutes.value = null
   distanceKm.value = null
   date.value = new Date().toISOString().slice(0,16)
+
   showForm.value = false
 }
 
-function startEdit(p: any) {
+
+function startEdit(p: Workout) {
+
   editingId.value = p.id
-  // prefill editable fields
+
   description.value = p.description ?? ''
   durationMinutes.value = p.durationMinutes ?? null
   distanceKm.value = p.distanceKm ?? null
-  date.value = new Date(p.date).toISOString().slice(0,16)
+
+  date.value =
+    new Date(p.date)
+      .toISOString()
+      .slice(0,16)
+
   showForm.value = true
 }
 
+
 function deletePost(id: number) {
+
   if (!confirm('Delete this post?')) return
+
   posts.removePost(id)
+
   if (editingId.value === id) {
+
     editingId.value = null
-    // clear form
-    title.value = ''
+
     description.value = ''
     durationMinutes.value = null
     distanceKm.value = null
     date.value = new Date().toISOString().slice(0,16)
+
     showForm.value = false
   }
 }
+
 </script>
 
 <template>

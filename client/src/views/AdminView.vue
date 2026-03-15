@@ -55,14 +55,30 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import type { User } from '@/types'
 
 const auth = useAuthStore()
-const users = computed(() => auth.users)
 
-const userMap = computed(() => Object.fromEntries(users.value.map((u: any) => [u.id, u])))
+// users is User[]
+const users = computed<User[]>(() => auth.users)
 
-function friendNames(user: any) {
+
+// map of id -> user
+const userMap = computed<Record<number, User>>(() =>
+  Object.fromEntries(
+    users.value.map((u: User) => [u.id, u])
+  )
+)
+
+
+// function with proper type
+function friendNames(user: User): string {
   if (!user.friends || user.friends.length === 0) return '-'
-  return user.friends.map((id: number) => userMap.value[id]?.name ?? String(id)).join(', ')
+
+  return user.friends
+    .map((id: number) =>
+      userMap.value[id]?.name ?? String(id)
+    )
+    .join(', ')
 }
 </script>
