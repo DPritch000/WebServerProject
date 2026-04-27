@@ -9,6 +9,21 @@
         "cwd": "${workspaceFolder}/client"
       },
       "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Frontend: Start Vite",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/client"
+      },
+      "isBackground": true,
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"

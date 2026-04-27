@@ -5,6 +5,7 @@ import FriendsActivityView from '@/views/FriendsActivityView.vue'
 import PeopleSearchView from '@/views/PeopleSearchView.vue'
 import HpmePageView from '@/views/HomePage.vue'
 import AdminView from '@/views/AdminView.vue'
+import AuthView from '@/views/AuthView.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -42,13 +43,38 @@ const router = createRouter({
       name: 'adminview',
       component: AdminView,
       meta: { requiresAdmin: true },
+    },
+    {
+      path: '/auth',
+      name: 'auth',
+      component: AuthView,
+      meta: { public: true },
+    },
+    {
+      path: '/login',
+      redirect: { name: 'auth', query: { mode: 'login' } },
+      meta: { public: true },
+    },
+    {
+      path: '/sign-up',
+      redirect: { name: 'auth', query: { mode: 'signup' } },
+      meta: { public: true },
     }
   ],
 })
 
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
-    if (to.meta?.requiresAdmin) {
+
+  if (!to.meta?.public && !auth.currentUser) {
+    return next({ name: 'auth', query: { mode: 'login', redirect: to.fullPath } })
+  }
+
+  if (to.name === 'auth' && auth.currentUser) {
+    return next({ name: 'home' })
+  }
+
+  if (to.meta?.requiresAdmin) {
     const current = auth.currentUser
     if (!current || current.role !== 'admin') {
       return next({ name: 'myactivity', query: { error: 'not-admin' } })

@@ -79,7 +79,7 @@ const isActive = ref(false);
                   <div class="navbar-end">
 
                       <div class="navbar-item">
-                        <RouterLink to="/sign-up" class="button is-primary">
+                        <RouterLink :to="{ name: 'auth', query: { mode: 'signup' } }" class="button is-primary">
                         <strong>Sign up</strong>
                         </RouterLink>
                       </div>

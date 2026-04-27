@@ -1,42 +1,27 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
-const open = ref(false)
+const router = useRouter()
 
-function toggle() { open.value = !open.value }
-function selectUser(id: number) {
-  auth.login(id)
-  open.value = false
+function goToLogin() {
+  router.push({ name: 'auth', query: { mode: 'login' } })
 }
+
 function handleLogout() {
   auth.logout()
+  router.push({ name: 'auth', query: { mode: 'login' } })
 }
 </script>
 
 <template>
   <div class="user-login">
     <template v-if="!auth.currentUser">
-      <div :class="['dropdown', { 'is-active': open }]">
-        <div class="dropdown-trigger">
-          <button class="button" @click.prevent="toggle">
-            <span class="icon"><i class="fa-solid fa-right-to-bracket"></i></span>
-            <span>Log in</span>
-            <span class="icon is-small"><i class="fas fa-angle-down" aria-hidden="true"></i></span>
-          </button>
-        </div>
-        <div class="dropdown-menu" role="menu">
-          <div class="dropdown-content">
-            <a v-for="u in auth.users" :key="u.id" class="dropdown-item" @click.prevent="selectUser(u.id)">
-              <figure class="image is-32x32" style="margin-right:8px; display:inline-block; vertical-align:middle;">
-                <img :src="u.profilePicture" alt="" style="object-fit:cover; border-radius:50%;" />
-              </figure>
-              <span>{{ u.name }}</span>
-            </a>
-          </div>
-        </div>
-      </div>
+      <button class="button" @click.prevent="goToLogin">
+        <span class="icon"><i class="fa-solid fa-right-to-bracket"></i></span>
+        <span>Log in</span>
+      </button>
     </template>
 
     <template v-else>
@@ -48,6 +33,4 @@ function handleLogout() {
   </div>
 </template>
 
-<style scoped>
-.dropdown .dropdown-item img { width:32px; height:32px; }
-</style>
+<style scoped></style>

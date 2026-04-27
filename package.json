@@ -6,23 +6,27 @@
     "type": "git",
     "url": "git+https://github.com/DPritch000/WebServerProject"
   },
-  "licenses":"ISC",
+  "licenses": "ISC",
   "scripts": {
-    "test" : "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx server/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
-
-
   "dependencies": {
+    "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.105.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "dotenv": "^17.3.1"
+    "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "@types/node": "^24.0.0",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^4.17.17",
-    "tsx": "4.21.0"
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.0.0",
+    "tsx": "4.21.0",
+    "typescript": "^5.9.3"
   }
 }

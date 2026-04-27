@@ -1,3 +1,11 @@
 {
+  "json.schemas": [
+    {
+      "fileMatch": ["tsconfig.node.json"],
+      "url": "https://json.schemastore.org/tsconfig"
+    }
+  ]
+}
+{
     "liveServer.settings.port": 5501
 }

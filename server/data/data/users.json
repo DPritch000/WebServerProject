@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Deven",
+    "friends": [2, 3],
+    "role": "admin",
+    "profilePicture": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/2010-kodiak-bear-1.jpg/1280px-2010-kodiak-bear-1.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Bob",
+    "friends": [1],
+    "role": "user",
+    "profilePicture": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/B.o.B_2023_%28cropped%29.jpg/250px-B.o.B_2023_%28cropped%29.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Charlie",
+    "friends": [1],
+    "role": "user",
+    "profilePicture": "https://m.media-amazon.com/images/M/MV5BNWNjN2QyMDItZDBlNS00OWE2LTk0MWItY2JkYmQxYTA0Mjc2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
+  }
+]
