@@ -1,15 +1,19 @@
 import express from 'express';
+import 'dotenv/config';
+import authRouter from './controllers/auth';
+import usersRouter from './controllers/users';
+import postsRouter from './controllers/posts';
+import commentsRouter from './controllers/comments';
 
-const PORT = 3000;
+const PORT = process.env.PORT ?? 3000;
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-})
+app.use(express.json());
 
-.get("/suny", (req, res) => {
-  res.send("The best accident of my life");
-});
+app.use('/auth', authRouter);
+app.use('/users', usersRouter);
+app.use('/posts', postsRouter);
+app.use('/comments', commentsRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`)

@@ -5,13 +5,18 @@ import FriendsActivityView from '@/views/FriendsActivityView.vue'
 import PeopleSearchView from '@/views/PeopleSearchView.vue'
 import HpmePageView from '@/views/HomePage.vue'
 import AdminView from '@/views/AdminView.vue'
+import LoginView from '@/views/LoginView.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-
-
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+      meta: { public: true },
+    },
     {
       path: '/',
       name: 'home',
@@ -46,14 +51,23 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const auth = useAuthStore()
-    if (to.meta?.requiresAdmin) {
-    const current = auth.currentUser
-    if (!current || current.role !== 'admin') {
+
+  if (!to.meta?.public && !auth.isLoggedIn) {
+    return next({ name: 'login' })
+  }
+
+  if (to.meta?.public && auth.isLoggedIn) {
+    return next({ name: 'home' })
+  }
+
+  if (to.meta?.requiresAdmin) {
+    if (!auth.currentUser || auth.currentUser.role !== 'admin') {
       return next({ name: 'myactivity', query: { error: 'not-admin' } })
     }
   }
+
   return next()
 })
 
