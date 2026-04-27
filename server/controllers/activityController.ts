@@ -11,6 +11,20 @@ export async function listByUser(req: any, res: Response) {
   }
 }
 
+export async function getById(req: any, res: Response) {
+  try {
+    const id = req.params.id
+    const user_id = req.user.id
+    const item = await activityModel.getActivityById(id)
+    if (!item) return res.status(404).json({ error: 'Activity not found' })
+    // Verify ownership (user can only see their own activities)
+    if (item.user_id !== user_id) return res.status(403).json({ error: 'Unauthorized' })
+    return res.json({ item })
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || err })
+  }
+}
+
 export async function create(req: any, res: Response) {
   try {
     const user_id = req.user.id

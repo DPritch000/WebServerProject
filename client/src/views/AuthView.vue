@@ -28,12 +28,20 @@
                 type="text"
                 autocomplete="username"
                 placeholder="Enter your username"
+                :disabled="auth.isLoading"
               />
             </div>
           </div>
 
           <div class="field">
-            <button class="button is-link is-fullwidth" type="submit">Log in</button>
+            <button 
+              class="button is-link is-fullwidth" 
+              type="submit"
+              :class="{ 'is-loading': auth.isLoading }"
+              :disabled="auth.isLoading"
+            >
+              Log in
+            </button>
           </div>
         </form>
 
@@ -47,25 +55,20 @@
                 type="text"
                 autocomplete="username"
                 placeholder="Choose a username"
+                :disabled="auth.isLoading"
               />
             </div>
           </div>
 
           <div class="field">
-            <label class="label">Profile Picture URL (optional)</label>
-            <div class="control">
-              <input
-                v-model="signupPicture"
-                class="input"
-                type="url"
-                autocomplete="url"
-                placeholder="https://example.com/photo.jpg"
-              />
-            </div>
-          </div>
-
-          <div class="field">
-            <button class="button is-primary is-fullwidth" type="submit">Create Account</button>
+            <button 
+              class="button is-primary is-fullwidth" 
+              type="submit"
+              :class="{ 'is-loading': auth.isLoading }"
+              :disabled="auth.isLoading"
+            >
+              Create Account
+            </button>
           </div>
         </form>
 
@@ -101,7 +104,6 @@ const auth = useAuthStore()
 
 const loginName = ref('')
 const signupName = ref('')
-const signupPicture = ref('')
 const error = ref('')
 
 const mode = computed(() => (route.query.mode === 'signup' ? 'signup' : 'login'))
@@ -126,32 +128,33 @@ function loginAs(name: string) {
   navigateAfterAuth()
 }
 
-function handleLogin() {
-  const name = loginName.value.trim()
-  if (!name) {
+async function handleLogin() {
+  const username = loginName.value.trim()
+  if (!username) {
     error.value = 'Please enter your username.'
     return
   }
-  const user = auth.loginByName(name)
-  if (!user) {
-    error.value = 'No account found with that username.'
-    return
+  try {
+    await auth.apiLogin(username, 'password')
+    navigateAfterAuth()
+  } catch (err: any) {
+    console.error('Login error:', err)
+    error.value = err?.message || 'Login failed. Is the backend running on port 3000?'
   }
-  navigateAfterAuth()
 }
 
-function handleSignup() {
-  const name = signupName.value.trim()
-  if (!name) {
+async function handleSignup() {
+  const username = signupName.value.trim()
+  if (!username) {
     error.value = 'Please choose a username.'
     return
   }
-
   try {
-    auth.signup(name, signupPicture.value)
+    await auth.apiSignup(username, 'password', username)
     navigateAfterAuth()
   } catch (err: any) {
-    error.value = err?.message || 'Could not create account.'
+    console.error('Signup error:', err)
+    error.value = err?.message || 'Signup failed. Is the backend running on port 3000?'
   }
 }
 </script>

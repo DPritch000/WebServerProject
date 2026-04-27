@@ -4,9 +4,12 @@ import { createUser, verifyPassword, getUserById } from '../models/userModel'
 
 export async function register(req: Request, res: Response) {
   try {
-    const { email, password, name } = req.body
-    const user = await createUser(email, password, name)
-    return res.json({ user })
+    const { username, password, name } = req.body
+    if (!username || !password) return res.status(400).json({ error: 'Username and password are required' })
+    const user = await createUser(username, password, name)
+    const secret = process.env.JWT_SECRET || 'devsecret'
+    const token = jwt.sign({ username: user.username }, secret, { subject: user.id, expiresIn: '7d' })
+    return res.json({ user, token })
   } catch (err: any) {
     return res.status(400).json({ error: err.message || err })
   }
@@ -14,12 +17,13 @@ export async function register(req: Request, res: Response) {
 
 export async function login(req: Request, res: Response) {
   try {
-    const { email, password } = req.body
-    const user = await verifyPassword(email, password)
+    const { username, password } = req.body
+    if (!username || !password) return res.status(400).json({ error: 'Username and password are required' })
+    const user = await verifyPassword(username, password)
     if (!user) return res.status(401).json({ error: 'Invalid credentials' })
     const secret = process.env.JWT_SECRET || 'devsecret'
-    const token = jwt.sign({ email: user.email }, secret, { subject: user.id, expiresIn: '7d' })
-    return res.json({ token })
+    const token = jwt.sign({ username: user.username }, secret, { subject: user.id, expiresIn: '7d' })
+    return res.json({ user, token })
   } catch (err: any) {
     return res.status(500).json({ error: err.message || err })
   }

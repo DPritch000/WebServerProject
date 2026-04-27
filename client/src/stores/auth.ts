@@ -2,10 +2,20 @@ import { defineStore } from 'pinia'
 import type { User } from '@/types'
 import usersData from '@/data/users.json'
 
+const TOKEN_STORAGE_KEY = 'ws_token'
 const USERS_STORAGE_KEY = 'ws_users'
-const CURRENT_USER_STORAGE_KEY = 'ws_current_user_id'
+const DEMO_MODE_STORAGE_KEY = 'ws_demo_mode'
 
-function loadUsers(): User[] {
+const API_BASE = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
+  ? 'http://localhost:3000/api'
+  : '/api'
+
+function loadToken(): string | null {
+  return typeof window !== 'undefined' ? localStorage.getItem(TOKEN_STORAGE_KEY) : null
+}
+
+function loadDemoUsers(): User[] {
+  if (typeof window === 'undefined') return usersData as User[]
   const raw = localStorage.getItem(USERS_STORAGE_KEY)
   if (!raw) return usersData as User[]
   try {
@@ -16,66 +26,125 @@ function loadUsers(): User[] {
   }
 }
 
-function loadCurrentUserId(): number | null {
-  const raw = localStorage.getItem(CURRENT_USER_STORAGE_KEY)
-  if (!raw) return null
-  const n = Number(raw)
-  return Number.isFinite(n) ? n : null
+function isDemoMode(): boolean {
+  return typeof window !== 'undefined' ? localStorage.getItem(DEMO_MODE_STORAGE_KEY) === 'true' : false
 }
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    currentUserId: loadCurrentUserId() as number | null,
-    users: loadUsers() as User[],
+    token: loadToken() as string | null,
+    currentUser: null as User | null,
+    users: loadDemoUsers() as User[],
+    isLoading: false,
+    error: null as string | null,
   }),
   getters: {
-    currentUser(state) {
-      return state.users.find(u => u.id === state.currentUserId) ?? null
+    isAuthenticated(state) {
+      return !!state.token || !!state.currentUser
     }
   },
   actions: {
-    persist() {
-      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(this.users))
-      if (this.currentUserId === null) {
-        localStorage.removeItem(CURRENT_USER_STORAGE_KEY)
+    persistToken(token: string | null) {
+      if (typeof window === 'undefined') return
+      if (token === null) {
+        localStorage.removeItem(TOKEN_STORAGE_KEY)
       } else {
-        localStorage.setItem(CURRENT_USER_STORAGE_KEY, String(this.currentUserId))
+        localStorage.setItem(TOKEN_STORAGE_KEY, token)
+      }
+    },
+    setDemoMode(enabled: boolean) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(DEMO_MODE_STORAGE_KEY, String(enabled))
+      }
+    },
+    async apiLogin(username: string, password: string) {
+      this.isLoading = true
+      this.error = null
+      try {
+        console.log(`Attempting to login to ${API_BASE}/auth/login`)
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error || `Login failed (${res.status})`)
+        this.token = data.token
+        this.currentUser = data.user
+        this.persistToken(data.token)
+        this.setDemoMode(false)
+        return this.currentUser
+      } catch (err: any) {
+        const msg = err?.message || 'Login failed'
+        console.error('Login error:', msg, err)
+        this.error = msg
+        throw err
+      } finally {
+        this.isLoading = false
+      }
+    },
+    async apiSignup(username: string, password: string, name?: string) {
+      this.isLoading = true
+      this.error = null
+      try {
+        console.log(`Attempting to signup at ${API_BASE}/auth/register`)
+        const res = await fetch(`${API_BASE}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, name }),
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error || `Signup failed (${res.status})`)
+        this.token = data.token
+        this.currentUser = data.user
+        this.persistToken(data.token)
+        this.setDemoMode(false)
+        return this.currentUser
+      } catch (err: any) {
+        const msg = err?.message || 'Signup failed'
+        console.error('Signup error:', msg, err)
+        this.error = msg
+        throw err
+      } finally {
+        this.isLoading = false
+      }
+    },
+    async fetchMe() {
+      if (!this.token) return null
+      try {
+        const res = await fetch(`${API_BASE}/auth/me`, {
+          headers: { 'Authorization': `Bearer ${this.token}` },
+        })
+        if (!res.ok) throw new Error('Failed to fetch user')
+        const data = await res.json()
+        this.currentUser = data.user
+        return this.currentUser
+      } catch (err) {
+        this.token = null
+        this.currentUser = null
+        this.persistToken(null)
+        return null
       }
     },
     loginByName(name: string) {
       const normalized = name.trim().toLowerCase()
       const user = this.users.find(u => u.name.trim().toLowerCase() === normalized)
       if (!user) return null
-      this.currentUserId = user.id
-      this.persist()
+      this.currentUser = user
+      this.setDemoMode(true)
       return user
     },
-    login(userId: number) {
-      this.currentUserId = userId
-      this.persist()
-    },
-    signup(name: string, profilePicture?: string) {
-      const cleanName = name.trim()
-      if (!cleanName) throw new Error('Name is required')
-      const exists = this.users.some(u => u.name.trim().toLowerCase() === cleanName.toLowerCase())
-      if (exists) throw new Error('A user with that name already exists')
-
-      const nextId = this.users.reduce((max, u) => Math.max(max, u.id), 0) + 1
-      const newUser: User = {
-        id: nextId,
-        name: cleanName,
-        friends: [],
-        role: 'user',
-        profilePicture: profilePicture?.trim() || undefined,
+    async init() {
+      // On app load, if we have a token, try to fetch the user
+      if (this.token && !this.currentUser) {
+        await this.fetchMe()
       }
-      this.users.push(newUser)
-      this.currentUserId = newUser.id
-      this.persist()
-      return newUser
     },
     logout() {
-      this.currentUserId = null
-      this.persist()
+      this.token = null
+      this.currentUser = null
+      this.persistToken(null)
+      this.setDemoMode(false)
     }
   }
 })

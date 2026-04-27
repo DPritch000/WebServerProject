@@ -2,29 +2,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Chrome (Vite)",
-      "type": "pwa-chrome",
-      "request": "launch",
-      "url": "http://localhost:5175",
-      "webRoot": "${workspaceFolder}/client",
-      "preLaunchTask": "Frontend: Start Vite",
-      "runtimeArgs": [
-        "--remote-debugging-port=9222"
-      ]
-    },
-    {
-      "name": "Attach to Chrome (9222)",
-      "type": "pwa-chrome",
-      "request": "attach",
-      "port": 9222,
-      "webRoot": "${workspaceFolder}/client"
-    }
-  ]
-}
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
       "name": "Backend: Debug Server",
       "type": "node",
       "request": "launch",
@@ -40,13 +17,6 @@
       "skipFiles": [
         "<node_internals>/**"
       ]
-    },
-    {
-      "name": "Frontend: Vite Dev Server",
-      "type": "node-terminal",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/client",
-      "command": "npm run dev"
     },
     {
       "name": "Frontend: Debug in Chrome",
@@ -65,6 +35,13 @@
       "url": "http://localhost:5173",
       "webRoot": "${workspaceFolder}/client",
       "sourceMaps": true
+    },
+    {
+      "name": "Frontend: Vite Dev Server",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/client",
+      "command": "npm run dev"
     }
   ],
   "compounds": [
