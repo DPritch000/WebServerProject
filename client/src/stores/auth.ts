@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { User } from '@/types'
+import { apiUrl } from '@/lib/api'
 
 const TOKEN_KEY = 'wspp_token'
 const USER_KEY = 'wspp_user'
@@ -40,7 +41,7 @@ export const useAuthStore = defineStore('auth', {
         throw new Error('Not logged in')
       }
 
-      const res = await fetch(`/api/users/${this.currentUser.id}`, {
+      const res = await fetch(apiUrl(`/users/${this.currentUser.id}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profilePicture }),
@@ -61,7 +62,7 @@ export const useAuthStore = defineStore('auth', {
 
     async refreshFollowing(): Promise<void> {
       if (!this.currentUser) return
-      const res = await fetch(`/api/users/${this.currentUser.id}/following`)
+      const res = await fetch(apiUrl(`/users/${this.currentUser.id}/following`))
       if (!res.ok) return
 
       const data = await parseResponseBody(res)
@@ -73,7 +74,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async login(username: string, password: string): Promise<void> {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(apiUrl('/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -102,7 +103,7 @@ export const useAuthStore = defineStore('auth', {
       await this.refreshFollowing()
     },
     async signup(username: string, password: string): Promise<void> {
-      const res = await fetch('/api/auth/signup', {
+      const res = await fetch(apiUrl('/auth/signup'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),

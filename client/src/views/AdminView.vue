@@ -72,6 +72,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { apiUrl } from '@/lib/api'
 
 const auth = useAuthStore()
 
@@ -92,7 +93,7 @@ async function fetchUsers() {
   loading.value = true
   error.value = ''
   try {
-    const res = await fetch('/api/users')
+    const res = await fetch(apiUrl('/users'))
     const data = await res.json()
     if (!res.ok) throw new Error(data?.error ?? 'Failed to fetch users')
     users.value = (data as any[]).map(u => ({
@@ -114,7 +115,7 @@ async function makeAdmin(userId: number) {
   message.value = ''
 
   try {
-    const res = await fetch(`/api/users/${userId}`, {
+    const res = await fetch(apiUrl(`/users/${userId}`), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role: 'admin' }),
@@ -139,7 +140,7 @@ async function removeUser(userId: number, username: string) {
   message.value = ''
 
   try {
-    const res = await fetch(`/api/users/${userId}`, { method: 'DELETE' })
+    const res = await fetch(apiUrl(`/users/${userId}`), { method: 'DELETE' })
     if (!res.ok && res.status !== 404) {
       const data = await res.json().catch(() => null)
       throw new Error(data?.error ?? 'Failed to delete user')

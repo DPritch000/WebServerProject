@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Workout } from '@/types'
+import { apiUrl } from '@/lib/api'
 
 type ApiPost = {
   id: number
@@ -52,7 +53,7 @@ export const usePostsStore = defineStore('posts', {
     async fetchFeed(userId: number) {
       this.loading = true
       try {
-        const res = await fetch(`/api/posts/feed/${userId}`)
+        const res = await fetch(apiUrl(`/posts/feed/${userId}`))
         if (!res.ok) throw new Error('Failed to fetch feed')
         const data = await res.json() as ApiPost[]
         this.posts = data.map(fromApi)
@@ -64,7 +65,7 @@ export const usePostsStore = defineStore('posts', {
     async fetchByUser(userId: number, viewerId: number) {
       this.loading = true
       try {
-        const res = await fetch(`/api/posts/user/${userId}?viewerId=${viewerId}`)
+        const res = await fetch(apiUrl(`/posts/user/${userId}?viewerId=${viewerId}`))
         if (!res.ok) throw new Error('Failed to fetch user posts')
         const data = await res.json() as ApiPost[]
         this.posts = data.map(fromApi)
@@ -82,7 +83,7 @@ export const usePostsStore = defineStore('posts', {
       date: string
       picture?: string
     }) {
-      const res = await fetch('/api/posts', {
+      const res = await fetch(apiUrl('/posts'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -113,7 +114,7 @@ export const usePostsStore = defineStore('posts', {
         picture: patch.picture,
       }
 
-      const res = await fetch(`/api/posts/${id}`, {
+      const res = await fetch(apiUrl(`/posts/${id}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -127,7 +128,7 @@ export const usePostsStore = defineStore('posts', {
     },
 
     async removePost(id: number) {
-      const res = await fetch(`/api/posts/${id}`, { method: 'DELETE' })
+      const res = await fetch(apiUrl(`/posts/${id}`), { method: 'DELETE' })
       if (!res.ok && res.status !== 404) throw new Error('Failed to delete post')
 
       const idx = this.posts.findIndex(p => p.id === id)

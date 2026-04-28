@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Comment } from '@/types'
+import { apiUrl } from '@/lib/api'
 
 type ApiComment = {
   id: number
@@ -29,7 +30,7 @@ export const useCommentsStore = defineStore('comments', {
   }),
   actions: {
     async fetchComments(postId: number, viewerId: number) {
-      const res = await fetch(`/api/comments/post/${postId}?viewerId=${viewerId}`)
+      const res = await fetch(apiUrl(`/comments/post/${postId}?viewerId=${viewerId}`))
       if (!res.ok) {
         if (res.status === 403) {
           this.commentsByPost[postId] = []
@@ -43,7 +44,7 @@ export const useCommentsStore = defineStore('comments', {
     },
 
     async addComment(postId: number, authorId: number, content: string) {
-      const res = await fetch('/api/comments', {
+      const res = await fetch(apiUrl('/comments'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ postId, authorId, content }),

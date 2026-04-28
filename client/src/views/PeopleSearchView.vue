@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import type { PublicUser } from '@/types'
+import { apiUrl } from '@/lib/api'
 
 const auth = useAuthStore()
 const users = ref<PublicUser[]>([])
@@ -13,7 +14,7 @@ async function loadPeople() {
   loading.value = true
   error.value = ''
   try {
-    const res = await fetch(`/api/users/public/list?viewerId=${auth.currentUser.id}`)
+    const res = await fetch(apiUrl(`/users/public/list?viewerId=${auth.currentUser.id}`))
     if (!res.ok) throw new Error('Failed to load users')
     users.value = await res.json() as PublicUser[]
   } catch (e: any) {
@@ -25,7 +26,7 @@ async function loadPeople() {
 
 async function follow(userId: number) {
   if (!auth.currentUser) return
-  const res = await fetch(`/api/users/${userId}/follow`, {
+  const res = await fetch(apiUrl(`/users/${userId}/follow`), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ followerId: auth.currentUser.id }),
@@ -37,7 +38,7 @@ async function follow(userId: number) {
 
 async function unfollow(userId: number) {
   if (!auth.currentUser) return
-  const res = await fetch(`/api/users/${userId}/follow?followerId=${auth.currentUser.id}`, {
+  const res = await fetch(apiUrl(`/users/${userId}/follow?followerId=${auth.currentUser.id}`), {
     method: 'DELETE',
   })
   if (!res.ok) return
