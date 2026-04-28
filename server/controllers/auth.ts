@@ -16,11 +16,6 @@ function getJwtSecret(): string {
 }
 
 function formatAuthError(err: unknown): string {
-  if (err instanceof AggregateError) {
-    const nested = err.errors?.[0] as Error | undefined;
-    if (nested?.message) return nested.message;
-  }
-
   if (err instanceof Error && err.message) {
     return err.message;
   }
