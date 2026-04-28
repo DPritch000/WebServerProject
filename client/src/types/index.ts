@@ -36,3 +36,11 @@ export type PublicUser = {
   profilePicture?: string;
   isFollowing: boolean;
 };
+
+export type Product = {
+  id: number;
+  title: string;
+  price: number;
+  description?: string;
+  thumbnail?: string;
+};
