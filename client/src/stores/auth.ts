@@ -35,6 +35,43 @@ export const useAuthStore = defineStore('auth', {
     isLoggedIn: (state) => !!state.token,
   },
   actions: {
+    async updateProfilePicture(profilePicture: string): Promise<void> {
+      if (!this.currentUser) {
+        throw new Error('Not logged in')
+      }
+
+      const res = await fetch(`/api/users/${this.currentUser.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profilePicture }),
+      })
+
+      const data = await parseResponseBody(res)
+      if (!res.ok) {
+        throw new Error(data?.error ?? `Failed to update profile picture (${res.status})`)
+      }
+
+      this.currentUser = {
+        ...this.currentUser,
+        profilePicture: data?.profile_picture ?? profilePicture,
+        name: data?.username ?? this.currentUser.name,
+      }
+      localStorage.setItem(USER_KEY, JSON.stringify(this.currentUser))
+    },
+
+    async refreshFollowing(): Promise<void> {
+      if (!this.currentUser) return
+      const res = await fetch(`/api/users/${this.currentUser.id}/following`)
+      if (!res.ok) return
+
+      const data = await parseResponseBody(res)
+      this.currentUser = {
+        ...this.currentUser,
+        friends: Array.isArray(data?.followingIds) ? data.followingIds : [],
+      }
+      localStorage.setItem(USER_KEY, JSON.stringify(this.currentUser))
+    },
+
     async login(username: string, password: string): Promise<void> {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -53,9 +90,16 @@ export const useAuthStore = defineStore('auth', {
 
       const { token, user } = data
       this.token = token
-      this.currentUser = { id: user.id, name: user.username, role: user.role, friends: [] }
+      this.currentUser = {
+        id: user.id,
+        name: user.username,
+        role: user.role,
+        profilePicture: user.profilePicture,
+        friends: [],
+      }
       localStorage.setItem(TOKEN_KEY, token)
       localStorage.setItem(USER_KEY, JSON.stringify(this.currentUser))
+      await this.refreshFollowing()
     },
     async signup(username: string, password: string): Promise<void> {
       const res = await fetch('/api/auth/signup', {
@@ -75,9 +119,16 @@ export const useAuthStore = defineStore('auth', {
 
       const { token, user } = data
       this.token = token
-      this.currentUser = { id: user.id, name: user.username, role: user.role, friends: [] }
+      this.currentUser = {
+        id: user.id,
+        name: user.username,
+        role: user.role,
+        profilePicture: user.profilePicture,
+        friends: [],
+      }
       localStorage.setItem(TOKEN_KEY, token)
       localStorage.setItem(USER_KEY, JSON.stringify(this.currentUser))
+      await this.refreshFollowing()
     },
     logout() {
       this.token = null

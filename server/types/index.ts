@@ -1,21 +1,10 @@
-import express from 'express';
-import usersRouter from './controllers/users';
-import postsRouter from './controllers/posts';
-import commentsRouter from './controllers/comments';
-
-const app = express();
-
-app.use(express.json());
-app.use('/users', usersRouter);
-app.use('/posts', postsRouter);
-app.use('/comments', commentsRouter);
-
 export type UserRole = 'admin' | 'user';
 
 export type User = {
   id: number;
   username: string;
   password: string;
+  profile_picture: string | null;
   role: UserRole;
   created_at: Date;
 };
@@ -25,6 +14,8 @@ export type Post = {
   title: string;
   description: string | null;
   author_id: number;
+  author_username?: string;
+  author_profile_picture?: string | null;
   duration_minutes: number;
   distance_km: number | null;
   date: Date;
@@ -37,7 +28,17 @@ export type Comment = {
   content: string;
   post_id: number;
   author_id: number;
+  author_username?: string;
+  author_profile_picture?: string | null;
   created_at: Date;
+};
+
+export type PublicUser = {
+  id: number;
+  username: string;
+  role: UserRole;
+  profilePicture?: string | null;
+  isFollowing?: boolean;
 };
 
 export type Exercise = {

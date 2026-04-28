@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { usePostsStore } from '@/stores/posts'
 import WorkoutPost from '@/components/WorkoutPost.vue'
@@ -9,7 +9,13 @@ const posts = usePostsStore()
 
 const combinedPosts = computed(() => {
 	if (!auth.currentUser) return []
-	return posts.postsForUserAndFriends(auth.currentUser.id, auth.currentUser.friends)
+	return posts.posts
+})
+
+onMounted(async () => {
+  if (!auth.currentUser) return
+  await auth.refreshFollowing()
+  await posts.fetchFeed(auth.currentUser.id)
 })
 </script>
 

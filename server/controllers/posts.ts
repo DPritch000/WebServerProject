@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import {
-  getAllPosts,
   getPostsByUser,
   getPostsForFeed,
   getPostById,
@@ -8,13 +7,20 @@ import {
   updatePost,
   deletePost,
 } from '../models/posts';
+import { isFollowing } from '../models/users';
 
 const router = Router();
 
 // GET /posts — all posts
-router.get('/', async (_req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const posts = await getAllPosts();
+    const viewerId = parseInt(String(req.query.viewerId ?? ''));
+    if (isNaN(viewerId)) {
+      res.status(400).json({ error: 'viewerId is required' });
+      return;
+    }
+
+    const posts = await getPostsForFeed(viewerId);
     res.json(posts);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch posts' });
@@ -25,10 +31,23 @@ router.get('/', async (_req, res) => {
 router.get('/user/:userId', async (req, res) => {
   try {
     const userId = parseInt(req.params.userId);
+    const viewerId = parseInt(String(req.query.viewerId ?? ''));
     if (isNaN(userId)) {
       res.status(400).json({ error: 'Invalid user id' });
       return;
     }
+
+    if (isNaN(viewerId)) {
+      res.status(400).json({ error: 'viewerId is required' });
+      return;
+    }
+
+    const canView = await isFollowing(viewerId, userId);
+    if (!canView) {
+      res.status(403).json({ error: 'You can only view posts from users you follow' });
+      return;
+    }
+
     const posts = await getPostsByUser(userId);
     res.json(posts);
   } catch (err) {
@@ -36,7 +55,7 @@ router.get('/user/:userId', async (req, res) => {
   }
 });
 
-// GET /posts/feed/:userId?friends=1,2,3 — posts for a user's feed
+// GET /posts/feed/:userId — posts for a user's feed
 router.get('/feed/:userId', async (req, res) => {
   try {
     const userId = parseInt(req.params.userId);
@@ -44,10 +63,8 @@ router.get('/feed/:userId', async (req, res) => {
       res.status(400).json({ error: 'Invalid user id' });
       return;
     }
-    const friendIds = req.query.friends
-      ? String(req.query.friends).split(',').map(Number).filter(n => !isNaN(n))
-      : [];
-    const posts = await getPostsForFeed(userId, friendIds);
+
+    const posts = await getPostsForFeed(userId);
     res.json(posts);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch feed' });
@@ -58,15 +75,29 @@ router.get('/feed/:userId', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const id = parseInt(req.params.id);
+    const viewerId = parseInt(String(req.query.viewerId ?? ''));
     if (isNaN(id)) {
       res.status(400).json({ error: 'Invalid post id' });
       return;
     }
+
+    if (isNaN(viewerId)) {
+      res.status(400).json({ error: 'viewerId is required' });
+      return;
+    }
+
     const post = await getPostById(id);
     if (!post) {
       res.status(404).json({ error: 'Post not found' });
       return;
     }
+
+    const canView = await isFollowing(viewerId, post.author_id);
+    if (!canView) {
+      res.status(403).json({ error: 'You can only view posts from users you follow' });
+      return;
+    }
+
     res.json(post);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch post' });

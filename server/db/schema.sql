@@ -4,6 +4,7 @@ CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
 	username VARCHAR(255) NOT NULL UNIQUE,
 	password VARCHAR(255) NOT NULL,
+	profile_picture TEXT,
 	role user_role NOT NULL DEFAULT 'user',
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -35,4 +36,12 @@ CREATE TABLE exercises (
 	duration INTEGER NOT NULL,
 	photo TEXT,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE follows (
+	follower_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	following_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (follower_id, following_id),
+	CHECK (follower_id <> following_id)
 );

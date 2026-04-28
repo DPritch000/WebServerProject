@@ -31,7 +31,7 @@ function formatAuthError(err: unknown): string {
 // POST /auth/signup
 router.post('/signup', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, profilePicture } = req.body;
     if (!username || !password) {
       res.status(400).json({ error: 'username and password are required' });
       return;
@@ -44,7 +44,7 @@ router.post('/signup', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    const user = await createUser(username, hashedPassword);
+    const user = await createUser(username, hashedPassword, profilePicture ?? null);
 
     const token = jwt.sign(
       { id: user.id, username: user.username, role: user.role },
@@ -52,7 +52,15 @@ router.post('/signup', async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    res.status(201).json({ token, user: { id: user.id, username: user.username, role: user.role } });
+    res.status(201).json({
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        profilePicture: user.profile_picture,
+      },
+    });
   } catch (err) {
     const message = formatAuthError(err);
     console.error('Signup error:', err);
@@ -87,7 +95,15 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        profilePicture: user.profile_picture,
+      },
+    });
   } catch (err) {
     const message = formatAuthError(err);
     console.error('Login error:', err);

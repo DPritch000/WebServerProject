@@ -2,6 +2,12 @@
   <section class="section">
     <div class="container">
       <div class="has-text-centered">
+        <img
+          v-if="auth.currentUser"
+          :src="auth.currentUser.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(auth.currentUser.name)}&background=random`"
+          alt="current user profile"
+          style="width:56px; height:56px; border-radius:50%; object-fit:cover; margin-bottom:12px;"
+        />
         <h1 class="title">Welcome{{ auth.currentUser ? `, ${auth.currentUser.name}` : '' }}!</h1>
         <p class="subtitle">Quick snapshot of your recent activity based on your posts.</p>
       </div>
@@ -64,12 +70,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { usePostsStore } from '@/stores/posts'
 
 const auth = useAuthStore()
 const posts = usePostsStore()
+
+onMounted(async () => {
+  if (!auth.currentUser) return
+  await posts.fetchByUser(auth.currentUser.id, auth.currentUser.id)
+})
 
 const now = new Date()
 const msDay = 24 * 60 * 60 * 1000

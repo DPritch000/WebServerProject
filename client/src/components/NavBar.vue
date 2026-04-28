@@ -77,13 +77,6 @@ const isActive = ref(false);
                 </div>
 
                   <div class="navbar-end">
-
-                      <div class="navbar-item">
-                        <RouterLink to="/sign-up" class="button is-primary">
-                        <strong>Sign up</strong>
-                        </RouterLink>
-                      </div>
-
                       <div class="navbar-item">
                       <UserLoginDropdown />
                       </div>

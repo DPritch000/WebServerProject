@@ -6,6 +6,8 @@ import {
   updateComment,
   deleteComment,
 } from '../models/comments';
+import { getPostById } from '../models/posts';
+import { isFollowing } from '../models/users';
 
 const router = Router();
 
@@ -13,10 +15,29 @@ const router = Router();
 router.get('/post/:postId', async (req, res) => {
   try {
     const postId = parseInt(req.params.postId);
+    const viewerId = parseInt(String(req.query.viewerId ?? ''));
     if (isNaN(postId)) {
       res.status(400).json({ error: 'Invalid post id' });
       return;
     }
+
+    if (isNaN(viewerId)) {
+      res.status(400).json({ error: 'viewerId is required' });
+      return;
+    }
+
+    const post = await getPostById(postId);
+    if (!post) {
+      res.status(404).json({ error: 'Post not found' });
+      return;
+    }
+
+    const canView = await isFollowing(viewerId, post.author_id);
+    if (!canView) {
+      res.status(403).json({ error: 'You can only view comments on users you follow' });
+      return;
+    }
+
     const comments = await getCommentsByPost(postId);
     res.json(comments);
   } catch (err) {
@@ -51,6 +72,19 @@ router.post('/', async (req, res) => {
       res.status(400).json({ error: 'postId, authorId, and content are required' });
       return;
     }
+
+    const post = await getPostById(Number(postId));
+    if (!post) {
+      res.status(404).json({ error: 'Post not found' });
+      return;
+    }
+
+    const canComment = await isFollowing(Number(authorId), post.author_id);
+    if (!canComment) {
+      res.status(403).json({ error: 'You can only comment on users you follow' });
+      return;
+    }
+
     const comment = await createComment(postId, authorId, content);
     res.status(201).json(comment);
   } catch (err) {

@@ -1,33 +1,38 @@
 import { defineStore } from 'pinia'
 import type { Workout } from '@/types'
-import workoutsData from '@/data/workouts.json'
-import demoPosts from '@/data/posts.json'
 
-const STORAGE_KEY = 'wspp_posts_v1'
-
-function loadPosts(): Workout[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    const stored = raw ? JSON.parse(raw) as Workout[] : []
-    const demo = demoPosts as Workout[]
-    // merge stored posts and demo posts, prefer stored on id collisions
-    const map = new Map<number, Workout>()
-    for (const p of stored) map.set(p.id, p)
-    for (const p of demo) if (!map.has(p.id)) map.set(p.id, p)
-    // return sorted by date descending
-    return Array.from(map.values()).slice().sort((a,b) => +new Date(b.date) - +new Date(a.date))
-  } catch (e) {
-    return []
-  }
+type ApiPost = {
+  id: number
+  title: string
+  description: string | null
+  author_id: number
+  author_username?: string
+  author_profile_picture?: string | null
+  duration_minutes: number
+  distance_km: number | null
+  date: string
+  picture: string | null
 }
 
-function savePosts(posts: Workout[]) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(posts)) } catch { }
+function fromApi(post: ApiPost): Workout {
+  return {
+    id: post.id,
+    userId: post.author_id,
+    authorUsername: post.author_username,
+    authorProfilePicture: post.author_profile_picture ?? undefined,
+    title: post.title,
+    description: post.description ?? undefined,
+    durationMinutes: post.duration_minutes,
+    distanceKm: post.distance_km ?? undefined,
+    date: post.date,
+    picture: post.picture ?? undefined,
+  }
 }
 
 export const usePostsStore = defineStore('posts', {
   state: () => ({
-    posts: loadPosts() as Workout[],
+    posts: [] as Workout[],
+    loading: false,
   }),
   getters: {
     postsByUser: (state) => {
@@ -44,44 +49,99 @@ export const usePostsStore = defineStore('posts', {
     }
   },
   actions: {
-    addPost(payload: Omit<Workout,'id'> & { workoutId?: number }) {
-      const id = Date.now()
-      // if workoutId provided, try to set title and picture from workouts.json
-      let title = payload.title
-      let picture = (payload as any).picture
-      if ((payload as any).workoutId) {
-        const w = (workoutsData as any[]).find(x => x.id === (payload as any).workoutId)
-        if (w) {
-          title = w.name
-          picture = w.photo
-        }
+    async fetchFeed(userId: number) {
+      this.loading = true
+      try {
+        const res = await fetch(`/api/posts/feed/${userId}`)
+        if (!res.ok) throw new Error('Failed to fetch feed')
+        const data = await res.json() as ApiPost[]
+        this.posts = data.map(fromApi)
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async fetchByUser(userId: number, viewerId: number) {
+      this.loading = true
+      try {
+        const res = await fetch(`/api/posts/user/${userId}?viewerId=${viewerId}`)
+        if (!res.ok) throw new Error('Failed to fetch user posts')
+        const data = await res.json() as ApiPost[]
+        this.posts = data.map(fromApi)
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async addPost(payload: {
+      userId: number
+      title: string
+      description?: string
+      durationMinutes: number
+      distanceKm?: number
+      date: string
+      picture?: string
+    }) {
+      const res = await fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          authorId: payload.userId,
+          title: payload.title,
+          description: payload.description,
+          durationMinutes: payload.durationMinutes,
+          distanceKm: payload.distanceKm,
+          date: payload.date,
+          picture: payload.picture,
+        }),
+      })
+
+      if (!res.ok) throw new Error('Failed to create post')
+
+      const created = fromApi(await res.json() as ApiPost)
+      this.posts.unshift(created)
+      return created
+    },
+
+    async updatePost(id: number, patch: Partial<Workout>) {
+      const body: any = {
+        title: patch.title,
+        description: patch.description,
+        duration_minutes: patch.durationMinutes,
+        distance_km: patch.distanceKm,
+        date: patch.date,
+        picture: patch.picture,
       }
 
-      const newPost: Workout = { id, ...payload, title: title as string, picture }
-      this.posts.unshift(newPost)
-      savePosts(this.posts)
-      return newPost
-    },
-    updatePost(id: number, patch: Partial<Workout>) {
+      const res = await fetch(`/api/posts/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) throw new Error('Failed to update post')
+
+      const updated = fromApi(await res.json() as ApiPost)
       const idx = this.posts.findIndex(p => p.id === id)
-      if (idx === -1) return null
-      this.posts[idx] = { ...this.posts[idx], ...patch }
-      savePosts(this.posts)
-      return this.posts[idx]
+      if (idx !== -1) this.posts[idx] = updated
+      return updated
     },
-    removePost(id: number) {
+
+    async removePost(id: number) {
+      const res = await fetch(`/api/posts/${id}`, { method: 'DELETE' })
+      if (!res.ok && res.status !== 404) throw new Error('Failed to delete post')
+
       const idx = this.posts.findIndex(p => p.id === id)
       if (idx === -1) return false
       this.posts.splice(idx, 1)
-      savePosts(this.posts)
       return true
     },
+
     load() {
-      this.posts = loadPosts()
+      return
     },
+
     clear() {
       this.posts = []
-      savePosts(this.posts)
     }
   }
 })

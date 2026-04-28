@@ -9,10 +9,30 @@ export type User = {
 export type Workout = {
   id: number;
   userId: number;
+  authorUsername?: string;
+  authorProfilePicture?: string;
   title: string;
   description?: string;
   durationMinutes: number;
   distanceKm?: number;
   date: string; // ISO string
   picture?: string;
+};
+
+export type Comment = {
+  id: number;
+  postId: number;
+  authorId: number;
+  authorUsername?: string;
+  authorProfilePicture?: string;
+  content: string;
+  createdAt: string;
+};
+
+export type PublicUser = {
+  id: number;
+  username: string;
+  role: 'admin' | 'user';
+  profilePicture?: string;
+  isFollowing: boolean;
 };

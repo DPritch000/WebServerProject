@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
-import type { User, UserRole } from '../types/index';
+import type { PublicUser, User, UserRole } from '../types/index';
 
 dotenv.config({ path: 'server/.env' });
 
@@ -17,6 +17,22 @@ export async function getAllUsers(): Promise<User[]> {
   return rows;
 }
 
+export async function getAllPublicUsers(viewerId: number): Promise<PublicUser[]> {
+  const { rows } = await pool.query<PublicUser>(
+    `SELECT u.id, u.username, u.role,
+      u.profile_picture AS "profilePicture",
+      EXISTS (
+        SELECT 1 FROM follows f
+        WHERE f.follower_id = $1 AND f.following_id = u.id
+      ) AS "isFollowing"
+     FROM users u
+     WHERE u.id <> $1
+     ORDER BY u.username ASC`,
+    [viewerId]
+  );
+  return rows;
+}
+
 // GET a single user by id
 export async function getUserById(id: number): Promise<User | null> {
   const { rows } = await pool.query<User>('SELECT * FROM users WHERE id = $1', [id]);
@@ -29,15 +45,55 @@ export async function getUserByUsername(username: string): Promise<User | null> 
   return rows[0] ?? null;
 }
 
+export async function getFollowingIds(userId: number): Promise<number[]> {
+  const { rows } = await pool.query<{ following_id: number }>(
+    'SELECT following_id FROM follows WHERE follower_id = $1',
+    [userId]
+  );
+  return rows.map(r => r.following_id);
+}
+
+export async function isFollowing(followerId: number, followingId: number): Promise<boolean> {
+  if (followerId === followingId) return true;
+
+  const { rows } = await pool.query<{ exists: boolean }>(
+    `SELECT EXISTS (
+      SELECT 1 FROM follows WHERE follower_id = $1 AND following_id = $2
+    )`,
+    [followerId, followingId]
+  );
+  return rows[0]?.exists ?? false;
+}
+
+export async function followUser(followerId: number, followingId: number): Promise<void> {
+  await pool.query(
+    `INSERT INTO follows (follower_id, following_id)
+     VALUES ($1, $2)
+     ON CONFLICT (follower_id, following_id) DO NOTHING`,
+    [followerId, followingId]
+  );
+}
+
+export async function unfollowUser(followerId: number, followingId: number): Promise<void> {
+  await pool.query(
+    'DELETE FROM follows WHERE follower_id = $1 AND following_id = $2',
+    [followerId, followingId]
+  );
+}
+
 // CREATE a user
 export async function createUser(
   username: string,
   password: string,
+  profilePicture: string | null = null,
   role: UserRole = 'user'
 ): Promise<User> {
+  const finalProfilePicture =
+    profilePicture ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random`;
+
   const { rows } = await pool.query<User>(
-    'INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING *',
-    [username, password, role]
+    'INSERT INTO users (username, password, profile_picture, role) VALUES ($1, $2, $3, $4) RETURNING *',
+    [username, password, finalProfilePicture, role]
   );
   return rows[0];
 }
@@ -45,9 +101,9 @@ export async function createUser(
 // UPDATE a user
 export async function updateUser(
   id: number,
-  patch: Partial<Pick<User, 'username' | 'password' | 'role'>>
+  patch: Partial<Pick<User, 'username' | 'password' | 'profile_picture' | 'role'>>
 ): Promise<User | null> {
-  const fields = Object.keys(patch) as (keyof typeof patch)[];
+  const fields = (Object.keys(patch) as (keyof typeof patch)[]).filter(key => patch[key] !== undefined);
   if (fields.length === 0) return getUserById(id);
 
   const setClauses = fields.map((key, i) => `${key} = $${i + 1}`).join(', ');
