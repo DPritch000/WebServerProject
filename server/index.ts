@@ -25,6 +25,10 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+app.get('/healthz', (_req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
+
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
