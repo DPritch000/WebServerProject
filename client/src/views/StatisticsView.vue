@@ -2,10 +2,14 @@
 import { computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { usePostsStore } from '@/stores/posts'
-import workoutsData from '@/data/workouts.json'
 
 const auth = useAuthStore()
 const posts = usePostsStore()
+
+function toNumber(value: unknown): number {
+  const n = Number(value)
+  return Number.isFinite(n) ? n : 0
+}
 
 onMounted(async () => {
   if (!auth.currentUser) return
@@ -19,10 +23,10 @@ const userPosts = computed(() => {
 
 // ── Summary stats ──────────────────────────────────────────────
 const totalWorkouts = computed(() => userPosts.value.length)
-const totalMinutes  = computed(() => userPosts.value.reduce((s, p) => s + p.durationMinutes, 0))
+const totalMinutes  = computed(() => userPosts.value.reduce((s, p) => s + toNumber(p.durationMinutes), 0))
 const totalHours    = computed(() => (totalMinutes.value / 60).toFixed(1))
 const totalDistance = computed(() => {
-  const d = userPosts.value.reduce((s, p) => s + (p.distanceKm ?? 0), 0)
+  const d = userPosts.value.reduce((s, p) => s + toNumber(p.distanceKm), 0)
   return d.toFixed(1)
 })
 const avgDuration   = computed(() =>
@@ -33,7 +37,9 @@ const longestWorkout = computed(() =>
   userPosts.value.reduce((best, p) => p.durationMinutes > (best?.durationMinutes ?? 0) ? p : best, null as typeof userPosts.value[0] | null)
 )
 const bestDistance = computed(() =>
-  userPosts.value.filter(p => p.distanceKm).reduce((best, p) => (p.distanceKm ?? 0) > (best?.distanceKm ?? 0) ? p : best, null as typeof userPosts.value[0] | null)
+  userPosts.value
+    .filter(p => toNumber(p.distanceKm) > 0)
+    .reduce((best, p) => toNumber(p.distanceKm) > toNumber(best?.distanceKm) ? p : best, null as typeof userPosts.value[0] | null)
 )
 
 // ── Workout type breakdown ──────────────────────────────────────
@@ -59,7 +65,7 @@ const last7Days = computed(() => {
     const label = d.toLocaleDateString('en-US', { weekday: 'short' })
     const minutes = userPosts.value
       .filter(p => p.date.slice(0, 10) === dateStr)
-      .reduce((s, p) => s + p.durationMinutes, 0)
+      .reduce((s, p) => s + toNumber(p.durationMinutes), 0)
     days.push({ label, date: dateStr, minutes })
   }
   return days

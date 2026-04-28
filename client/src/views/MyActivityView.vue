@@ -16,9 +16,6 @@ const durationMinutes = ref<number | null>(null)
 const distanceKm = ref<number | null>(null)
 const date = ref(new Date().toISOString().slice(0,16)) // YYYY-MM-DDTHH:mm
 const editingId = ref<number | null>(null)
-const profilePictureUrl = ref('')
-const profileSaveMessage = ref('')
-const profileSaveError = ref('')
 
 const userPosts = computed(() => {
   if (!auth.currentUser) return []
@@ -32,23 +29,8 @@ function toggleForm() { showForm.value = !showForm.value }
 
 onMounted(async () => {
   if (!auth.currentUser) return
-  profilePictureUrl.value = auth.currentUser.profilePicture ?? ''
   await posts.fetchByUser(auth.currentUser.id, auth.currentUser.id)
 })
-
-async function saveProfilePicture() {
-  if (!auth.currentUser) return
-  profileSaveMessage.value = ''
-  profileSaveError.value = ''
-
-  try {
-    await auth.updateProfilePicture(profilePictureUrl.value.trim())
-    profileSaveMessage.value = 'Profile picture updated.'
-    await posts.fetchByUser(auth.currentUser.id, auth.currentUser.id)
-  } catch (e: any) {
-    profileSaveError.value = e.message ?? 'Failed to update profile picture'
-  }
-}
 
 async function submit() {
   if (!auth.currentUser) return alert('Please log in first')
@@ -122,30 +104,6 @@ async function deletePost(id: number) {
 <template>
   <main style="padding-top:4rem">
     <h1>My Activity</h1>
-
-    <section v-if="auth.currentUser" class="box" style="width:720px; max-width:95%; margin:16px auto;">
-      <h2 class="title is-5">Profile</h2>
-      <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px;">
-        <img
-          :src="auth.currentUser.profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(auth.currentUser.name)}&background=random`"
-          alt="profile"
-          style="width:56px; height:56px; border-radius:50%; object-fit:cover;"
-          @error="(e) => { const t = e.target as HTMLImageElement; t.onerror = null; t.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(auth.currentUser!.name)}&background=random` }"
-        />
-        <div style="flex:1;">
-          <label class="label">Profile picture URL</label>
-          <input
-            v-model="profilePictureUrl"
-            class="input"
-            type="url"
-            placeholder="https://example.com/my-photo.jpg"
-          />
-        </div>
-        <button class="button is-primary" @click="saveProfilePicture">Save</button>
-      </div>
-      <p v-if="profileSaveMessage" class="has-text-success is-size-7">{{ profileSaveMessage }}</p>
-      <p v-if="profileSaveError" class="has-text-danger is-size-7">{{ profileSaveError }}</p>
-    </section>
 
     <div v-if="accessError" class="notification is-danger" style="max-width:720px; margin:12px auto; text-align:center;">
       You are not an admin and cannot access the requested page.
