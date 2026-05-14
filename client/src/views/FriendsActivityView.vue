@@ -27,7 +27,7 @@ const canLoadMore = computed(() => displayedCount.value < combinedPosts.value.le
 // Sentinel element at the bottom — when it enters the viewport, load the next batch
 const sentinel = ref<HTMLElement | null>(null)
 useIntersectionObserver(sentinel, ([entry]) => {
-  if (entry.isIntersecting && canLoadMore.value) {
+  if (entry?.isIntersecting && canLoadMore.value) {
     displayedCount.value = Math.min(displayedCount.value + pageSize.value, combinedPosts.value.length)
   }
 })

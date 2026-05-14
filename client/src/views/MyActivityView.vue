@@ -30,7 +30,7 @@ const canLoadMore = computed(() => displayedCount.value < userPosts.value.length
 
 const sentinel = ref<HTMLElement | null>(null)
 useIntersectionObserver(sentinel, ([entry]) => {
-  if (entry.isIntersecting && canLoadMore.value) {
+  if (entry?.isIntersecting && canLoadMore.value) {
     displayedCount.value = Math.min(displayedCount.value + pageSize.value, userPosts.value.length)
   }
 })
