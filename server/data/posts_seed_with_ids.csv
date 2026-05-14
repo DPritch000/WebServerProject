@@ -1,0 +1,58 @@
+id,title,description,author_id,duration_minutes,distance_km,date,picture,created_at
+7,"Sunrise Jog","Easy recovery run around the neighborhood.",2,30,5.20,2026-04-12 06:30:00,https://source.unsplash.com/collection/190727/800x600,2026-04-12 06:45:00
+8,"Hill Repeats","Short intense hill intervals; 8 repeats.",3,45,6.50,2026-03-20 07:00:00,https://source.unsplash.com/collection/190727/800x600,2026-03-20 07:10:00
+9,"Evening Ride","Leisurely bike ride with friends.",4,60,20.00,2026-02-14 18:15:00,https://source.unsplash.com/collection/483251/800x600,2026-02-14 19:20:00
+10,"Trail Run","Technical singletrack with lots of roots and fun descents.",5,75,12.30,2025-11-02 09:00:00,https://source.unsplash.com/collection/190727/800x600,2025-11-02 10:05:00
+11,"Lunchtime Walk","Quick walk to clear the head between meetings.",6,20,,2026-01-08 12:30:00,https://source.unsplash.com/collection/888146/800x600,2026-01-08 12:45:00
+12,"Interval Session","5x1000m at threshold pace.",2,50,10.00,2026-05-01 06:00:00,https://source.unsplash.com/collection/190727/800x600,2026-05-01 06:30:00
+13,"Recovery Swim","Easy swim focusing on form.",3,40,,2026-04-25 17:00:00,https://source.unsplash.com/collection/139386/800x600,2026-04-25 17:50:00
+14,"City Cruise","Casual 10k ride exploring new streets.",4,35,10.00,2025-12-10 15:00:00,https://source.unsplash.com/collection/483251/800x600,2025-12-10 15:30:00
+15,"Long Run","Steady long run building endurance.",5,120,21.10,2026-03-07 07:00:00,https://source.unsplash.com/collection/190727/800x600,2026-03-07 09:10:00
+16,"Tempo Run","20 minutes at tempo pace with warmup and cooldown.",6,55,9.00,2026-02-28 06:15:00,https://source.unsplash.com/collection/190727/800x600,2026-02-28 07:15:00
+17,"Morning Hike","Exploring local state park; lots of climbs.",2,180,8.50,2025-10-20 08:00:00,https://source.unsplash.com/collection/1111575/800x600,2025-10-20 12:30:00
+18,"Sprint Session","Track sprints and drills.",3,35,,2026-04-07 18:00:00,https://source.unsplash.com/collection/190727/800x600,2026-04-07 18:40:00
+19,"Commute Run","Ran to work instead of driving—felt great.",4,25,4.80,2026-01-22 08:10:00,https://source.unsplash.com/collection/190727/800x600,2026-01-22 08:40:00
+20,"Beach Workout","Sand sprints and core work by the shore.",5,50,,2025-09-15 16:00:00,https://source.unsplash.com/collection/1111575/800x800,2025-09-15 17:05:00
+21,"Group Ride","Fast group ride with paceline practice.",6,95,45.00,2026-03-30 07:30:00,https://source.unsplash.com/collection/483251/800x600,2026-03-30 09:10:00
+22,"Park Loops","Intervals on park loop; relaxed effort.",2,40,8.00,2026-04-05 18:30:00,https://source.unsplash.com/collection/190727/800x600,2026-04-05 19:15:00
+23,"Strength + Run","Quick gym session then 30-minute easy run.",3,70,,2026-02-02 17:00:00,https://source.unsplash.com/collection/139386/800x600,2026-02-02 18:20:00
+24,"Sunset Walk","Evening stroll with photography stops.",4,45,,2026-05-10 19:30:00,https://source.unsplash.com/collection/888146/800x600,2026-05-10 20:20:00
+25,"Brick Workout","Bike followed by short run to practice transitions.",5,85,15.00,2026-03-12 06:00:00,https://source.unsplash.com/collection/483251/800x600,2026-03-12 07:30:00
+26,"Stair Session","Stair repeats for leg power.",6,30,,2026-04-18 07:00:00,https://source.unsplash.com/collection/190727/800x600,2026-04-18 07:45:00
+27,"Tempo Ride","Sustained threshold effort on the bike.",2,110,35.00,2026-03-03 07:15:00,https://source.unsplash.com/collection/483251/800x600,2026-03-03 09:05:00
+28,"Night Run","Short night run with headlamp.",3,28,6.00,2026-01-29 21:00:00,https://source.unsplash.com/collection/190727/800x600,2026-01-29 21:30:00
+29,"Cross-Training","Elliptical and mobility work.",4,50,,2026-02-18 15:00:00,https://source.unsplash.com/collection/139386/800x600,2026-02-18 15:55:00
+30,"Club Ride","Social ride with a coffee stop.",5,65,22.00,2026-04-03 09:00:00,https://source.unsplash.com/collection/483251/800x800,2026-04-03 10:10:00
+31,"Fartlek Fun","Playful speed changes on flat route.",6,48,10.20,2026-03-21 07:00:00,https://source.unsplash.com/collection/190727/800x600,2026-03-21 07:55:00
+32,"Recovery Yoga","Gentle mobility and breathing exercises.",2,40,,2026-02-25 18:00:00,https://source.unsplash.com/collection/139386/800x600,2026-02-25 18:45:00
+33,"Coffee Run","Stopped for a coffee mid-run—best decision.",3,35,7.00,2026-04-14 09:00:00,https://source.unsplash.com/collection/190727/800x600,2026-04-14 09:45:00
+34,"Tempo Intervals","3x12min tempo with 3-min recovery.",4,60,11.50,2026-03-15 06:30:00,https://source.unsplash.com/collection/190727/800x600,2026-03-15 07:45:00
+35,"Mountain Biking","Technical climbs and flowy descents.",5,140,28.00,2025-11-28 10:00:00,https://source.unsplash.com/collection/1111575/800x600,2025-11-28 12:20:00
+36,"Speedwork","8x400m with equal recovery on the track.",6,40,8.00,2026-04-02 06:00:00,https://source.unsplash.com/collection/190727/800x600,2026-04-02 06:45:00
+37,"Family Hike","Hike with family and pup; scenic views.",2,150,9.20,2025-10-05 09:30:00,https://source.unsplash.com/collection/1111575/800x800,2025-10-05 12:00:00
+38,"Sprint Tri Practice","Swim-bike-run bricks with sprint focus.",3,95,18.00,2026-03-22 06:00:00,https://source.unsplash.com/collection/483251/800x800,2026-03-22 07:55:00
+39,"Tempo Hill Run","Hard sustained hills for strength.",4,70,7.80,2026-02-09 07:30:00,https://source.unsplash.com/collection/190727/800x800,2026-02-09 08:45:00
+40,"Community 5K","Local parkrun 5K; solid effort.",5,32,5.00,2026-01-11 08:00:00,https://source.unsplash.com/collection/190727/800x800,2026-01-11 08:40:00
+41,"Recovery Ride","Easy spin to flush the legs.",6,45,18.00,2026-04-08 16:00:00,https://source.unsplash.com/collection/483251/800x800,2026-04-08 16:50:00
+42,"Pace Practice","Run at goal race pace for short intervals.",2,55,10.00,2026-03-29 06:15:00,https://source.unsplash.com/collection/190727/800x800,2026-03-29 07:20:00
+43,"Sunrise Hike","Early morning summit for sunrise.",3,200,6.00,2026-05-04 04:00:00,https://source.unsplash.com/collection/1111575/800x800,2026-05-04 07:10:00
+44,"Mixed Intervals","Short and long intervals mixed.",4,50,9.50,2026-02-05 06:30:00,https://source.unsplash.com/collection/190727/800x800,2026-02-05 07:25:00
+45,"Club Track Night","Speed session with teammates on track.",5,42,9.00,2026-04-20 19:00:00,https://source.unsplash.com/collection/190727/800x800,2026-04-20 19:50:00
+46,"Dirt Road Ride","Gravel grind with steady power.",6,125,58.00,2026-03-09 07:00:00,https://source.unsplash.com/collection/483251/800x800,2026-03-09 09:05:00
+47,"Park Bench Strength","Bodyweight circuit between park benches.",2,30,,2026-01-05 12:00:00,https://source.unsplash.com/collection/139386/800x800,2026-01-05 12:40:00
+48,"Interval Ladder","400-800-1200 ladder on track.",3,62,12.00,2026-04-11 06:00:00,https://source.unsplash.com/collection/190727/800x800,2026-04-11 07:10:00
+49,"Sunset Spin","Evening easy spin to unwind.",4,38,15.00,2026-05-08 18:30:00,https://source.unsplash.com/collection/483251/800x800,2026-05-08 19:10:00
+50,"Recovery Walk","Short walk with mobility breaks.",5,20,,2026-03-18 14:00:00,https://source.unsplash.com/collection/888146/800x800,2026-03-18 14:25:00
+51,"Challenge Ride","Long endurance ride with climbing.",6,210,95.00,2025-09-22 06:00:00,https://source.unsplash.com/collection/483251/800x800,2025-09-22 10:15:00
+52,"Parkrun PB Attempt","Tried to set a new 5K PR today.",2,33,5.00,2026-04-27 08:00:00,https://source.unsplash.com/collection/190727/800x800,2026-04-27 08:45:00
+53,"Easy Day","Low effort maintenance run.",3,22,4.50,2026-02-12 09:00:00,https://source.unsplash.com/collection/190727/800x800,2026-02-12 09:30:00
+54,"Tempo Brick","Bike then tempo run off the bike.",4,100,30.00,2026-03-05 06:00:00,https://source.unsplash.com/collection/483251/800x800,2026-03-05 07:50:00
+55,"Core + Mobility","Gym core session and mobility drills.",5,40,,2026-04-16 12:00:00,https://source.unsplash.com/collection/139386/800x800,2026-04-16 12:50:00
+56,"Night Ride","Group night ride with lights and reflective gear.",6,80,40.00,2026-01-30 20:00:00,https://source.unsplash.com/collection/483251/800x800,2026-01-30 21:20:00
+57,"Fell Run","Hard hill run on the fells; epic views.",2,160,14.00,2025-11-10 09:00:00,https://source.unsplash.com/collection/1111575/800x800,2025-11-10 11:40:00
+58,"Coffee + Walk","Slow walk with friends and coffee break.",3,25,,2026-04-21 10:00:00,https://source.unsplash.com/collection/888146/800x800,2026-04-21 10:30:00
+59,"Threshold Test","20-minute threshold test on the road.",4,55,13.00,2026-03-01 06:00:00,https://source.unsplash.com/collection/190727/800x800,2026-03-01 07:05:00
+60,"Tempo Run Progress","Solid tempo session with negative splits.",5,58,11.00,2026-04-29 06:15:00,https://source.unsplash.com/collection/190727/800x800,2026-04-29 07:20:00
+61,"Club Time Trial","Short TT effort with the club.",6,36,9.50,2026-03-17 07:00:00,https://source.unsplash.com/collection/483251/800x800,2026-03-17 07:45:00
+62,"Recovery Swim Session","Gentle swim to loosen shoulders.",2,30,,2026-02-22 18:00:00,https://source.unsplash.com/collection/139386/800x800,2026-02-22 18:40:00
+63,"Evening Social Ride","Casual pace, lots of chatting.",3,70,25.00,2026-04-06 18:00:00,https://source.unsplash.com/collection/483251/800x800,2026-04-06 19:20:00
