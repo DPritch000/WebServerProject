@@ -19,13 +19,13 @@ onMounted(async () => {
   await posts.fetchFeed(auth.currentUser.id)
 })
 
-const pageSize = 10
-const displayedCount = ref(pageSize)
+const pageSize = ref(10) // number of posts to load per batch; change this to control batch size
+const displayedCount = ref(pageSize.value)
 const displayedPosts = computed(() => combinedPosts.value.slice(0, displayedCount.value))
 
 function loadMore() {
 	if (displayedCount.value < combinedPosts.value.length) {
-		displayedCount.value = Math.min(displayedCount.value + pageSize, combinedPosts.value.length)
+		displayedCount.value = Math.min(displayedCount.value + pageSize.value, combinedPosts.value.length)
 		console.debug('[FriendsActivity] loadMore -> displayedCount', displayedCount.value, 'total', combinedPosts.value.length)
 	}
 }
