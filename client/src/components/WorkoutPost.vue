@@ -57,7 +57,12 @@ async function submitComment() {
     </div>
 
     <div style="margin-top:12px; display:flex; justify-content:center">
-      <img :src="props.post.picture" alt="workout" style="width:420px; max-width:100%; height:260px; object-fit:cover; border-radius:8px;" />
+      <img
+        :src="props.post.picture || 'https://placehold.co/420x260?text=No+Image'"
+        alt="workout"
+        style="width:420px; max-width:100%; height:260px; object-fit:cover; border-radius:8px;"
+        @error="(e) => { const t = e.target as HTMLImageElement; t.onerror = null; t.src = 'https://placehold.co/420x260?text=No+Image' }"
+      />
     </div>
 
     <div style="margin-top:12px; border-top:1px solid #eee; padding-top:12px;">

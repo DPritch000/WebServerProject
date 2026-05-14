@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useIntersectionObserver } from '@vueuse/core'
 import { useAuthStore } from '@/stores/auth'
 import { usePostsStore } from '@/stores/posts'
 import workoutsData from '@/data/workouts.json'
@@ -20,6 +21,26 @@ const editingId = ref<number | null>(null)
 const userPosts = computed(() => {
   if (!auth.currentUser) return []
   return posts.postsByUser(auth.currentUser.id)
+})
+
+const pageSize = ref(10)
+const displayedCount = ref(pageSize.value)
+const displayedPosts = computed(() => userPosts.value.slice(0, displayedCount.value))
+const canLoadMore = computed(() => displayedCount.value < userPosts.value.length)
+
+const sentinel = ref<HTMLElement | null>(null)
+useIntersectionObserver(sentinel, ([entry]) => {
+  if (entry.isIntersecting && canLoadMore.value) {
+    displayedCount.value = Math.min(displayedCount.value + pageSize.value, userPosts.value.length)
+  }
+})
+
+watch(userPosts, (newVal, oldVal) => {
+  if ((oldVal?.length ?? 0) === 0 && newVal.length > 0) {
+    displayedCount.value = pageSize.value
+  } else if (displayedCount.value > newVal.length) {
+    displayedCount.value = Math.max(newVal.length, 0)
+  }
 })
 
 const route = useRoute()
@@ -174,12 +195,17 @@ async function deletePost(id: number) {
       <div v-if="!auth.currentUser">Please log in to see and add workouts.</div>
       <div v-else style="width:100%; display:flex; flex-direction:column; align-items:center;">
         <div v-if="userPosts.length === 0">No workouts yet.</div>
-        <div v-for="p in userPosts" :key="p.id" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+        <div v-for="p in displayedPosts" :key="p.id" style="width:100%; display:flex; flex-direction:column; align-items:center;">
           <WorkoutPost :post="p" />
           <div style="margin:8px 0; display:flex; gap:8px;">
             <button class="button is-small is-info" @click="startEdit(p)">Edit</button>
             <button class="button is-small is-danger" @click="deletePost(p.id)">Delete</button>
           </div>
+        </div>
+        <div ref="sentinel" style="height:1px; width:100%;"></div>
+        <div style="width:100%; display:flex; justify-content:center; padding:1rem 0">
+          <div v-if="canLoadMore">Loading more…</div>
+          <div v-else-if="userPosts.length > 0">End of activity</div>
         </div>
       </div>
     </section>
