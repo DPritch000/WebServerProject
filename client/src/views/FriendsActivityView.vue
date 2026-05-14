@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
-import { useInfiniteScroll } from '@vueuse/core'
+import { useIntersectionObserver } from '@vueuse/core'
 import { useAuthStore } from '@/stores/auth'
 import { usePostsStore } from '@/stores/posts'
 import WorkoutPost from '@/components/WorkoutPost.vue'
@@ -22,18 +22,15 @@ onMounted(async () => {
 const pageSize = ref(10) // number of posts to load per batch; change this to control batch size
 const displayedCount = ref(pageSize.value)
 const displayedPosts = computed(() => combinedPosts.value.slice(0, displayedCount.value))
-
-useInfiniteScroll(
-  window,
-  () => {
-    if (displayedCount.value < combinedPosts.value.length) {
-      displayedCount.value = Math.min(displayedCount.value + pageSize.value, combinedPosts.value.length)
-    }
-  },
-  { distance: 200 }
-)
-
 const canLoadMore = computed(() => displayedCount.value < combinedPosts.value.length)
+
+// Sentinel element at the bottom — when it enters the viewport, load the next batch
+const sentinel = ref<HTMLElement | null>(null)
+useIntersectionObserver(sentinel, ([entry]) => {
+  if (entry.isIntersecting && canLoadMore.value) {
+    displayedCount.value = Math.min(displayedCount.value + pageSize.value, combinedPosts.value.length)
+  }
+})
 
 // When posts first load (empty → non-empty), reset to pageSize so posts appear.
 // When source shrinks, clamp displayedCount so we don't reference out-of-bounds.
@@ -55,6 +52,8 @@ watch(combinedPosts, (newVal, oldVal) => {
 
 			<div style="width:100%; display:flex; flex-direction:column; align-items:center;">
 				<WorkoutPost v-for="p in displayedPosts" :key="p.id" :post="p" />
+				<!-- sentinel: when this enters the viewport the next batch loads -->
+				<div ref="sentinel" style="height:1px; width:100%;"></div>
 				<div style="width:100%; display:flex; justify-content:center; padding:1rem 0">
 					<div v-if="canLoadMore">Loading more…</div>
 					<div v-else>End of activity</div>
