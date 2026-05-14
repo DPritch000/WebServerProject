@@ -55,7 +55,7 @@ onMounted(() => {
 		<div v-else style="display:flex; flex-direction:column; align-items:center; width:100%;">
 			<div v-if="combinedPosts.length === 0">No recent activity from you or your friends.</div>
 
-			<div v-infinite-scroll="[loadMore, { distance: 200, canLoadMore }]" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+			<div v-infinite-scroll="loadMore" style="width:100%; display:flex; flex-direction:column; align-items:center;">
 				<WorkoutPost v-for="p in displayedPosts" :key="p.id" :post="p" />
 				<div v-if="combinedPosts.length > 0" style="height:1px; width:100%;"></div>
 				<div style="width:100%; display:flex; justify-content:center; padding:1rem 0">
