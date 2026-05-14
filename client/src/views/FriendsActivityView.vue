@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
+import { vInfiniteScroll } from '@vueuse/components'
 import { useAuthStore } from '@/stores/auth'
 import { usePostsStore } from '@/stores/posts'
 import WorkoutPost from '@/components/WorkoutPost.vue'
@@ -17,6 +18,34 @@ onMounted(async () => {
   await auth.refreshFollowing()
   await posts.fetchFeed(auth.currentUser.id)
 })
+
+const pageSize = 10
+const displayedCount = ref(pageSize)
+const displayedPosts = computed(() => combinedPosts.value.slice(0, displayedCount.value))
+
+function loadMore() {
+	if (displayedCount.value < combinedPosts.value.length) {
+		displayedCount.value = Math.min(displayedCount.value + pageSize, combinedPosts.value.length)
+		console.debug('[FriendsActivity] loadMore -> displayedCount', displayedCount.value, 'total', combinedPosts.value.length)
+	}
+}
+
+function canLoadMore() {
+	return displayedCount.value < combinedPosts.value.length
+}
+
+// ensure displayedCount stays within bounds when source changes
+watch(
+	combinedPosts,
+	(newVal) => {
+		displayedCount.value = Math.min(displayedCount.value, newVal.length || 0)
+	},
+	{ immediate: true }
+)
+
+onMounted(() => {
+	console.debug('[FriendsActivity] onMounted combinedPosts length', combinedPosts.value.length, 'displayedCount', displayedCount.value)
+})
 </script>
 
 <template>
@@ -25,10 +54,18 @@ onMounted(async () => {
 		<div v-if="!auth.currentUser">Please log in to see activity.</div>
 		<div v-else style="display:flex; flex-direction:column; align-items:center; width:100%;">
 			<div v-if="combinedPosts.length === 0">No recent activity from you or your friends.</div>
-			<WorkoutPost v-for="p in combinedPosts" :key="p.id" :post="p" />
+
+			<div v-infinite-scroll="[loadMore, { distance: 200, canLoadMore }]" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+				<WorkoutPost v-for="p in displayedPosts" :key="p.id" :post="p" />
+				<div v-if="combinedPosts.length > 0" style="height:1px; width:100%;"></div>
+				<div style="width:100%; display:flex; justify-content:center; padding:1rem 0">
+					<div v-if="canLoadMore()">Loading more…</div>
+					<div v-else>End of activity</div>
+				</div>
+			</div>
 		</div>
 	</main>
 </template>
 
- 
+
 
